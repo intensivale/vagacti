@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Formulário de Solicitação de Vaga - UTI HNSS">
+<meta name="theme-color" content="#1a7a6f">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📋</text></svg>">
+<title>Solicitação de Vaga - UTI | HNSS</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', Arial, sans-serif; background: linear-gradient(135deg, #e0f2f1, #f5f5f5); min-height: 100vh; padding: 20px; }
+.container { max-width: 900px; margin: 0 auto; background: white; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); overflow: hidden; }
+.header { background: linear-gradient(135deg, #1a7a6f, #0d5047); color: white; padding: 30px; text-align: center; }
+.header-logos { display: flex; justify-content: center; align-items: center; gap: 30px; margin-bottom: 20px; }
+.header-logos img { height: 60px; max-width: 150px; background: white; padding: 10px; border-radius: 8px; object-fit: contain; }
+.header h1 { font-size: 28px; margin-bottom: 8px; }
+.header p { font-size: 14px; opacity: 0.9; }
+.form-content { padding: 30px; }
+.section { margin-bottom: 30px; padding-bottom: 25px; border-bottom: 2px solid #e0e0e0; }
+.section:last-child { border-bottom: none; }
+.section-title { color: #0d5047; font-size: 18px; font-weight: bold; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #1a7a6f; display: flex; align-items: center; gap: 10px; }
+.form-group { margin-bottom: 20px; }
+.form-group label { display: block; color: #333; font-weight: 600; margin-bottom: 8px; font-size: 14px; }
+.required::after { content: " *"; color: #c62828; }
+.form-group input[type="text"], .form-group input[type="date"], .form-group input[type="number"], .form-group textarea, .form-group select { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; font-family: inherit; transition: border-color 0.3s; }
+.form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: #1a7a6f; }
+.form-group textarea { min-height: 80px; resize: vertical; }
+.radio-group { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+.radio-option { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.radio-option input[type="radio"] { width: 18px; height: 18px; cursor: pointer; }
+.radio-option label { margin: 0; font-weight: normal; cursor: pointer; }
+.conditional-field { display: none; margin-top: 15px; padding: 15px; background: #f5f5f5; border-radius: 8px; border-left: 4px solid #1a7a6f; }
+.conditional-field.active { display: block; }
+.form-actions { display: flex; gap: 15px; justify-content: flex-end; margin-top: 30px; padding-top: 20px; border-top: 2px solid #e0e0e0; }
+.btn { padding: 14px 30px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: all 0.3s; }
+.btn-primary { background: #1a7a6f; color: white; }
+.btn-primary:hover { background: #0d5047; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(26, 122, 111, 0.3); }
+.btn-secondary { background: #e0e0e0; color: #333; }
+.btn-secondary:hover { background: #bdbdbd; }
+.success-message { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 40px; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); text-align: center; z-index: 10000; max-width: 400px; width: 90%; }
+.success-message.show { display: block; animation: fadeIn 0.3s; }
+@keyframes fadeIn { from { opacity: 0; transform: translate(-50%, -60%); } to { opacity: 1; transform: translate(-50%, -50%); } }
+.success-icon { font-size: 64px; margin-bottom: 20px; }
+.success-message h2 { color: #2e7d32; margin-bottom: 15px; }
+.success-message p { color: #666; margin-bottom: 25px; }
+.overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; }
+.overlay.show { display: block; }
+.alert-box { background: #fff3e0; border-left: 4px solid #ff9800; padding: 15px; margin-bottom: 20px; border-radius: 4px; }
+.alert-box strong { color: #e65100; }
+@media (max-width: 768px) { .header h1 { font-size: 22px; } .form-content { padding: 20px; } }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div class="header-logos">
+            <img src="img/HNSS.jpg" alt="Hospital Nossa Senhora da Saúde" onerror="this.style.display='none'">
+            <img src="img/intensivale.jpeg" alt="Intensivale" onerror="this.style.display='none'">
+        </div>
+        <h1>📋 Solicitação de Vaga na UTI</h1>
+        <p>Hospital Nossa Senhora da Saúde</p>
+    </div>
+    
+    <div class="form-content">
+        <div class="alert-box">
+            <strong>⚠️ Atenção:</strong> Preencha todos os campos obrigatórios (*). A solicitação será exibida em tempo real no painel de gestão de leitos.
+        </div>
+        
+        <form id="formSolicitacao">
+            
+            <!-- DADOS BÁSICOS -->
+            <div class="section">
+                <div class="section-title">👤 Dados Básicos</div>
+                
+                <div class="form-group">
+                    <label class="required">Nome do Solicitante</label>
+                    <input type="text" id="nomeSolicitante" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="required">Nome do Paciente</label>
+                    <input type="text" id="nomePaciente" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="required">Diagnóstico</label>
+                    <textarea id="diagnostico" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="required">Idade</label>
+                    <input type="number" id="idade" min="0" max="150" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="required">Local de Alocação do Paciente</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="localPA" name="localAlocacao" value="PA" required>
+                            <label for="localPA">PA (Pronto Atendimento)</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="localClinicaCirurgica" name="localAlocacao" value="Clínica Cirúrgica">
+                            <label for="localClinicaCirurgica">Clínica Cirúrgica</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="localEnfermaria" name="localAlocacao" value="Enfermaria">
+                            <label for="localEnfermaria">Enfermaria</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="campoLeitoAlocacao" class="conditional-field">
+                    <div class="form-group">
+                        <label class="required">Leito do Paciente</label>
+                        <input type="text" id="leitoAlocacao" placeholder="Ex: Leito 05, Box 3, etc.">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- PRIORIDADE CLÍNICA -->
+            <div class="section">
+                <div class="section-title">⚠️ Prioridade Clínica</div>
+                
+                <div class="form-group">
+                    <label class="required">Instabilidade Hemodinâmica?</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="hemodinamicaSim" name="hemodinamica" value="sim">
+                            <label for="hemodinamicaSim">Sim</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="hemodinamicaNao" name="hemodinamica" value="nao" checked>
+                            <label for="hemodinamicaNao">Não</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="required">Instabilidade Respiratória?</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="respiratoriaSim" name="respiratoria" value="sim">
+                            <label for="respiratoriaSim">Sim</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="respiratoriaNao" name="respiratoria" value="nao" checked>
+                            <label for="respiratoriaNao">Não</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="required">Sepse?</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="sepseSim" name="sepse" value="sim">
+                            <label for="sepseSim">Sim</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="sepseNao" name="sepse" value="nao" checked>
+                            <label for="sepseNao">Não</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="required">Alteração do Nível de Consciência?</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="conscienciaSim" name="consciencia" value="sim">
+                            <label for="conscienciaSim">Sim</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="conscienciaNao" name="consciencia" value="nao" checked>
+                            <label for="conscienciaNao">Não</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="camposConsciencia" class="conditional-field">
+                    <div class="form-group">
+                        <label class="required">Escala de Glasgow</label>
+                        <input type="number" id="glasgow" min="3" max="15" placeholder="3-15">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="required">Isolamento Respiratório?</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="isolamentoSim" name="isolamento" value="sim">
+                            <label for="isolamentoSim">Sim</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="isolamentoNao" name="isolamento" value="nao" checked>
+                            <label for="isolamentoNao">Não</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- AÇÕES -->
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="window.location.href='index.html'">← Voltar</button>
+                <button type="button" class="btn btn-secondary" onclick="limparFormulario()">Limpar Formulário</button>
+                <button type="submit" class="btn btn-primary">📤 Enviar Solicitação</button>
+            </div>
+            
+        </form>
+    </div>
+</div>
+
+<!-- Overlay -->
+<div class="overlay" id="overlay"></div>
+
+<!-- Mensagem de Sucesso -->
+<div class="success-message" id="successMessage">
+    <div class="success-icon">✅</div>
+    <h2>Solicitação Enviada!</h2>
+    <p>Sua solicitação foi enviada com sucesso e está aguardando aprovação.</p>
+    <button class="btn btn-primary" onclick="novaSolicitacao()">Nova Solicitação</button>
+    <button class="btn btn-secondary" onclick="window.location.href='index.html'" style="margin-top: 10px;">Ver Gestão de Leitos</button>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database-compat.js"></script>
+
+<script>
+// ========== CONFIGURAÇÃO FIREBASE ==========
+const firebaseConfig = {
+    apiKey: "AIzaSyB7Mt4NsiXOam36i5MgClhKa-IOimlQ4DE",
+    authDomain: "gestaoutihnss.firebaseapp.com",
+    projectId: "gestaoutihnss",
+    storageBucket: "gestaoutihnss.firebasestorage.app",
+    messagingSenderId: "664272211913",
+    appId: "1:664272211913:web:66e30e6670126b3e51a218",
+    databaseURL: "https://gestaoutihnss-default-rtdb.firebaseio.com"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// ========== CAMPOS CONDICIONAIS ==========
+
+// Local de Alocação - Leito
+document.querySelectorAll('input[name="localAlocacao"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        document.getElementById('campoLeitoAlocacao').classList.add('active');
+    });
+});
+
+// Consciência
+document.querySelectorAll('input[name="consciencia"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        document.getElementById('camposConsciencia').classList.toggle('active', this.value === 'sim');
+    });
+});
+
+// ========== ENVIO DO FORMULÁRIO ==========
+
+document.getElementById('formSolicitacao').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    // Validar campo de local de alocação
+    const localSelecionado = document.querySelector('input[name="localAlocacao"]:checked');
+    if (!localSelecionado) {
+        alert('⚠️ Por favor, selecione o Local de Alocação do Paciente!');
+        return;
+    }
+    
+    // Validar leito
+    const leito = document.getElementById('leitoAlocacao').value;
+    if (!leito || leito.trim() === '') {
+        alert('⚠️ Por favor, informe o Leito do Paciente!');
+        document.getElementById('leitoAlocacao').focus();
+        return;
+    }
+    
+    // Calcular prioridade
+    const prioridade = calcularPrioridade();
+    
+    // Coletar dados
+    const dados = {
+        // Dados básicos
+        nomeSolicitante: document.getElementById('nomeSolicitante').value,
+        nomePaciente: document.getElementById('nomePaciente').value,
+        diagnostico: document.getElementById('diagnostico').value,
+        idade: parseInt(document.getElementById('idade').value),
+        localAlocacao: getRadioValue('localAlocacao'),
+        leitoAlocacao: document.getElementById('leitoAlocacao').value || null,
+        
+        // Prioridade clínica
+        instabilidadeHemodinamica: getRadioValue('hemodinamica') === 'sim',
+        instabilidadeRespiratoria: getRadioValue('respiratoria') === 'sim',
+        sepse: getRadioValue('sepse') === 'sim',
+        alteracaoConsciencia: getRadioValue('consciencia') === 'sim',
+        glasgow: document.getElementById('glasgow').value || null,
+        isolamentoRespiratorio: getRadioValue('isolamento') === 'sim',
+        
+        // Metadata
+        prioridade: prioridade,
+        status: 'pendente',
+        dataHoraSolicitacao: new Date().toISOString()
+    };
+    
+    try {
+        console.log('📤 Enviando solicitação...', dados);
+        await db.ref('solicitacoes').push(dados);
+        console.log('✅ Solicitação enviada com sucesso!');
+        mostrarSucesso();
+    } catch (error) {
+        console.error('❌ Erro ao enviar:', error);
+        alert('❌ Erro ao enviar solicitação: ' + error.message);
+    }
+});
+
+function getRadioValue(name) {
+    const radio = document.querySelector(`input[name="${name}"]:checked`);
+    return radio ? radio.value : null;
+}
+
+function calcularPrioridade() {
+    let score = 0;
+    
+    // Alta prioridade
+    if (getRadioValue('hemodinamica') === 'sim') score += 3;
+    if (getRadioValue('respiratoria') === 'sim') score += 3;
+    if (getRadioValue('sepse') === 'sim') score += 2;
+    
+    // Média prioridade
+    if (getRadioValue('consciencia') === 'sim') score += 1;
+    
+    if (score >= 4) return 'alta';
+    if (score >= 2) return 'media';
+    return 'baixa';
+}
+
+function mostrarSucesso() {
+    document.getElementById('overlay').classList.add('show');
+    document.getElementById('successMessage').classList.add('show');
+}
+
+function novaSolicitacao() {
+    document.getElementById('overlay').classList.remove('show');
+    document.getElementById('successMessage').classList.remove('show');
+    limparFormulario();
+}
+
+function limparFormulario() {
+    document.getElementById('formSolicitacao').reset();
+    document.querySelectorAll('.conditional-field').forEach(field => {
+        field.classList.remove('active');
+    });
+}
+</script>
+
+</body>
+</html>
